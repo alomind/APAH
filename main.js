@@ -8030,25 +8030,6 @@ const installedILRs = [
   {
       "type": "Feature",
       "properties": {
-          "id": "AA1803",
-          "timestamp": "1701831237",
-          "level": "normal",
-          "asset": {
-              "id": "75d6d639-003b-4dc7-afcb-146d18e6101e"
-          },
-          "assetGroup": "ag"
-      },
-      "geometry": {
-          "type": "Point",
-          "coordinates": [
-              78.21648933333333,
-              12.372905666666668
-          ]
-      }
-  },
-  {
-      "type": "Feature",
-      "properties": {
           "id": "AA1840",
           "timestamp": 1707366308,
           "level": "normal",
@@ -12983,25 +12964,6 @@ const installedILRs = [
           "coordinates": [
               80.9875964,
               17.0696809
-          ]
-      }
-  },
-  {
-      "type": "Feature",
-      "properties": {
-          "id": "AA0294",
-          "timestamp": "1699994684",
-          "level": "normal",
-          "asset": {
-              "id": "1daae8a1-4bcf-44b5-9c57-b6442e9b2809"
-          },
-          "assetGroup": "ag"
-      },
-      "geometry": {
-          "type": "Point",
-          "coordinates": [
-              80.16129,
-              13.07676
           ]
       }
   },
