@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Data Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .date-selector {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .date-selector label {
+            margin: 0 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .button-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button-container button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #aaacaa;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button-container button.active {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Data for AA1712</h1>
+        <!-- <div class="date-selector">
+            <label for="from-date">From:</label>
+            <input type="date" id="from-date">
+            <label for="to-date">To:</label>
+            <input type="date" id="to-date">
+            <button onclick="fetchData()">Fetch Data</button>
+        </div> -->
+        <div class="button-container">
+            <button id="btn-2h" onclick="fetchData('2h')">Last 2 Hours</button>
+            <button id="btn-6h" onclick="fetchData('6h')">Last 6 Hours</button>
+            <button id="btn-12h" onclick="fetchData('12h')">Last 12 Hours</button>
+            <button id="btn-1d" onclick="fetchData('1d')">Last 1 Day</button>
+            <button id="btn-2d" onclick="fetchData('2d')">Last 2 Days</button>
+
+        </div>
+        <div id="slectedTxt"></div>
+        <table id="data-table">
+            <thead>
+                <tr id="table-header">
+                    <!-- Table headers will be dynamically inserted here -->
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Table data will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        const deviceUid = 'dc5475cfd790';  // API secret - AA1712
+
+        async function fetchData(range) {
+            let endTime = Date.now();
+            let startTime;
+            console.log("new range is ", range);
+            switch (range) {
+                case '2h':
+                    startTime = endTime - (2 * 60 * 60 * 1000);
+                    break;
+                case '6h':
+                    startTime = endTime - (6 * 60 * 60 * 1000);
+                    break;
+                case '12h':
+                    startTime = endTime - (12 * 60 * 60 * 1000);
+                    break;
+                case '1d':
+                    startTime = endTime - (24 * 60 * 60 * 1000);
+                    break;
+                case '2d':
+                    startTime = endTime - (2*24 * 60 * 60 * 1000);
+                    break;
+                default:
+                    alert('Invalid time range');
+                    return;
+            }
+
+            // Highlight the selected button
+            document.querySelectorAll('.button-container button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.getElementById('btn-' + range).classList.add('active');
+            document.getElementById('slectedTxt').innerText = `Showing data from ${new Date(startTime).toLocaleString()} to ${new Date(endTime).toLocaleString()}`
+            // const fromDate = document.getElementById('from-date').value;
+            // const toDate = document.getElementById('to-date').value;
+
+            // if (!fromDate || !toDate) {
+            //     alert('Please select both from and to dates.');
+            //     return;
+            // }
+
+            // const startTime = new Date(fromDate).getTime();
+            // const endTime = new Date(toDate).getTime();
+            const url = `https://entity.brokenatom.io/api/v1/entity/get_many?app_id=01gqy3rr869arna28cwytcgcqv&model_id=01gqy3vf5kvtg4vjegyk0cmwbv&attribute=id&limit=128&start_key=${deviceUid}${startTime}&end_key=${deviceUid}${endTime}&apikey=3ba5f0bcfbce60663934f8059c1a72e086d63c8fb2f5d6266249fd8f334e45ff`
+            document.body.style.cursor = "wait";
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                document.body.style.cursor = "default";
+                const json = await response.json();
+                const data = json.data;
+                console.log("api reponse", data);
+                displayData(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function displayData(data) {
+            const tableHeader = document.getElementById('table-header');
+            const tableBody = document.getElementById('table-body');
+
+            // Clear previous content
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+
+            const fields = ['timestamp', 'batteryPercentage', 'ext_sensor_data'];
+
+            // Create table headers
+            fields.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header.charAt(0).toUpperCase() + header.slice(1).replace('_', ' ');
+                tableHeader.appendChild(th);
+            });
+
+            // Populate table rows
+            data.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                fields.forEach(field => {
+                    const td = document.createElement('td');
+                    if (field !== 'timestamp') {
+                        td.textContent = item[field];
+                    } else {
+                        td.textContent = new Date(item[field]).toLocaleString();
+                    }
+                    tr.appendChild(td);
+                });
+                if (index == 0){
+                    tableBody.appendChild(tr);
+                } else {
+                    tableBody.insertBefore(tr, tableBody.firstChild);
+                }
+            });
+        }
+
+        // Fetch and display data on page load
+        // const fromDateElement = document.querySelector('#from-date');
+        // console.log("hello");
+        // const yesDate = new Date(Date.now()-24*60*60*1000)
+        // fromDateElement.value = `${yesDate.getFullYear()}-${(yesDate.getMonth()+1).toString().padStart(2,0)}-${yesDate.getDate().toString().padStart(2,0)}`;
+        // // fromDateElement.value = `2024-06-01`;
+
+        // console.log("from val", fromDateElement.value, `${yesDate.getFullYear()}-${(yesDate.getMonth()+1).toString().padStart(2,0)}-${yesDate.getDate().toString().padStart(2,0)}`);
+
+        // const today = new Date();
+        // const toDateElement = document.querySelector('#to-date');
+        // // toDateElement.value = `2024-06-02`;
+
+        // toDateElement.value = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2,0)}-${today.getDate().toString().padStart(2,0)}`;
+
+        fetchData('2h');
+    </script>
+</body>
+</html>
