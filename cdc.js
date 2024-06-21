@@ -90,6 +90,12 @@ const addCCCdevice = async () => {
     document.getElementById('deviceIdTxt').style.display = 'none';
     document.getElementById('addDevice').style.display = 'none';
 
+    } else {
+      if (res.errors && res.errors[0] && res.errors[0].includes('has already been assigned to')) {
+        document.getElementById('info').innerHTML = 'Already Done. Please Check with Zion';
+        document.getElementById('deviceIdTxt').style.display = 'none';
+        document.getElementById('addDevice').style.display = 'none';
+      }
     }
   });
 
