@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CCC Configuration</title>
+        <script src="./cdc.js"></script>
+        <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .button-container {
+            position: relative;
+            display: inline-block;
+        }
+        #connectButton,#addDevice {
+            padding: 15px 30px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #3498db;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #connectButton:hover {
+            background-color: #2980b9;
+        }
+        #connectButton:focus {
+            outline: none;
+        }
+        .loading {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 24px;
+            height: 24px;
+            animation: spin 2s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button id="connectButton" onclick="connect1()">Connect</button>
+        <div class="loading" id="loading"></div>
+        <div id="info"></div>
+        <input type="text" id="deviceIdTxt" style="display: none;"/>
+        <button id="addDevice" onclick="addCCCdevice()" style="display: none;">Finish</button>
+    </div>
+    <script>
+        function connect1() {
+            var button = document.getElementById('connectButton');
+            var loading = document.getElementById('loading');
+            
+            // Show the loading animation
+            loading.style.display = 'block';
+            // button.innerText = 'Connecting...';
+            
+            // Simulate a network request with a timeout
+            setTimeout(function() {
+                // Hide the loading animation
+                loading.style.display = 'none';
+                // Update button text
+                // button.innerText = 'OK';
+                // button.style.backgroundColor = '#2ecc71'; // Change button color to green
+            }, 2000); // 2 seconds delay
+            connect();
+        }
+    </script>
+</body>
+</html>
+
