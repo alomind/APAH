@@ -10,7 +10,7 @@ const options = {
     { usbVendorId: 51966, usbProductId: 16387 }
   ],
 };
-var ZION_PROD_URL = "https://testec2.zioniot.com/xenon/adapt/";
+var ZION_PROD_URL = "testec2.zioniot.com/xenon/adapt/";
 
 var decoder;
 var inputDone;
