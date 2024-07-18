@@ -30334,31 +30334,118 @@ const installedILRs = [
       }
   }
 ]
-console.log("installed ILRs", installedILRs);
 
-const gj = {
-  type: 'FeatureCollection',
-  features: [...installedILRs],
-};
-console.log("gj", gj);
-toBeDelivered.forEach((e) => {
-  gj.features.push({
-    type: 'Feature',
-    properties: {
-      // id: d.id,
-      // timestamp: d.lastUpdateLocation.timestamp,
-      level: 'warnings', // normal, warnings, violations,
-      asset: { id: e.addr },
-      assetGroup: 'ag',
-    },
-    geometry: {
-      type: 'Point',
-      coordinates: [e.lng, e.lat],
-    },
-  });
+const installedILRsMain = [];
+fetch('./data/APAHupdatedLocations1267.json').then(res => res.json()).then((json) => {
+  console.log('loaded 1267 ',json, json.entries.length);
+  json.entries.forEach(e => {
+    const newRecord = {
+      "type": "Feature",
+      "properties": {
+          "id": e['Logger Id'],
+          "timestamp": "1683391201",
+          "level": "normal",
+          "asset": {
+              "id": e.Address
+          },
+          "assetGroup": "ag"
+      },
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              e.Longitude,
+              e.Lattiude
+          ]
+      }
+    };
+    installedILRsMain.push(newRecord);
+  })
+  updateOverviewMap();
+  
 });
+
+fetch('./data/160UnitsCoordinatesChecked.json').then(res => res.json()).then((json) => {
+  console.log('loaded 160 ',json, json.Sheet1.length);
+  json.Sheet1.forEach(e => {
+    const newRecord = {
+      "type": "Feature",
+      "properties": {
+          "id": e['IoT \nNumber'],
+          "timestamp": "1683391201",
+          "level": "normal",
+          "asset": {
+              "id": `${e['Location Name \n(Name of the VD)']}-${e.Mandal}-${e.District}`
+          },
+          "assetGroup": "ag"
+      },
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              e.lng,
+              e.lat
+          ]
+      }
+    };
+    installedILRsMain.push(newRecord);
+  })
+  updateOverviewMap();
+});
+
+fetch('./data/351WithLatLngChecked.json').then(res => res.json()).then((json) => {
+  console.log('loaded 351 ',json, json.Sheet1.length);
+  json.Sheet1.forEach(e => {
+    const newRecord = {
+      "type": "Feature",
+      "properties": {
+          "id": e['IoT\nNo.'],
+          "timestamp": "1683391201",
+          "level": "normal",
+          "asset": {
+              "id": e.query
+          },
+          "assetGroup": "ag"
+      },
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              e.lng,
+              e.lat
+          ]
+      }
+    };
+    installedILRsMain.push(newRecord);
+  })
+  updateOverviewMap();
+});
+
+console.log("installed ILRs", installedILRs.length);
+console.log("to be delivered", toBeDelivered.length);
+console.log("walkin cold rooms ", walkingColdRooms.length);
+console.log("deep freezers", deepFreezers.length);
+
+const gjOthers = {
+  type: 'FeatureCollection',
+  features: [],
+};
+// console.log("gj", gj);
+// toBeDelivered.forEach((e) => {
+//   gj.features.push({
+//     type: 'Feature',
+//     properties: {
+//       // id: d.id,
+//       // timestamp: d.lastUpdateLocation.timestamp,
+//       level: 'warnings', // normal, warnings, violations,
+//       asset: { id: e.addr },
+//       assetGroup: 'ag',
+//     },
+//     geometry: {
+//       type: 'Point',
+//       coordinates: [e.lng, e.lat],
+//     },
+//   });
+// });
 deepFreezers.forEach((e) => {
-  gj.features.push({
+  gjOthers.features.push({
     type: 'Feature',
     properties: {
       // id: d.id,
@@ -30374,7 +30461,7 @@ deepFreezers.forEach((e) => {
   });
 });
 walkingColdRooms.forEach((e) => {
-  gj.features.push({
+  gjOthers.features.push({
     type: 'Feature',
     properties: {
       // id: d.id,
@@ -30393,14 +30480,21 @@ walkingColdRooms.forEach((e) => {
 
 
 let dataloaded = false;
-const geojsons = { overviewPoints: gj };
 const updateOverviewMap = () => {
   const { map } = window.mapbox;
   if (!map) return;
   if (!map.isStyleLoaded()) {
     console.log('map style not yet loaded');
     return;
-  }
+  };
+  console.log("installedILRsmain length", installedILRsMain.length);
+  console.log("gjothers features", gjOthers.features.length);
+  const gj = {
+    type: 'FeatureCollection',
+    features: [...installedILRsMain, ...gjOthers.features],
+  };
+  const geojsons = { overviewPoints: gj };
+
   console.log("updating overview points");
   console.log("geojsons", geojsons);
   // filters for classifying devices into three categories based on level
