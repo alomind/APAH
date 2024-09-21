@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zion Paras Debug AA1712</title>
+    <title>Zion Paras Debug AG0899</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
         body {
@@ -71,7 +71,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Data for AA1712</h1>
+        <h1>Data for AG0899</h1>
         <!-- <div class="date-selector">
             <label for="from-date">From:</label>
             <input type="date" id="from-date">
@@ -81,8 +81,8 @@
         </div> -->
         <div>
             <-- Device wakes up --> </br>
-            Data from device: </br> {"type":"INFO","v":"DEVICE_ID:AA1712;BATTERY_PERCENTAGE:94;DEVICE_TEMP:32.5;"} </br>
-        </br> Data from freezer to device: </br> {"type":"RESP","v":"DEVICE_ID:AA1712;Temp:30.0;SetV:4.0;Lid:0;"} </br>
+            Data from device: </br> {"type":"INFO","v":"DEVICE_ID:AG0899;BATTERY_PERCENTAGE:94;DEVICE_TEMP:32.5;"} </br>
+        </br> Data from freezer to device: </br> {"type":"RESP","v":"DEVICE_ID:AG0899;Temp:30.0;SetV:4.0;Lid:0;"} </br>
         </br> <-- Device sends data to server and receives commands to send to freezer --> </br>
             Data from device to freezer once data is sent to server: </br> {"type":"INFO","v":"Temp:30.0;SetV:4.0;Lid:0;SIGNAL_STRENGTH:0;TIMESTAMP:1717501317;DATA_SENDING_STATUS:false;"} </br>
         </div>
@@ -107,7 +107,7 @@
         </table>
     </div>
     <script>
-        const deviceUid = 'dc5475cfd790';  // API secret - AA1712
+        const deviceUid = 'dc5475ceebc0';  // API secret - AG0899
 
         async function fetchData(range) {
             let endTime = Date.now();
