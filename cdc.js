@@ -129,7 +129,7 @@ let handleMessageFromDevice = (msgString) => {
             const PROD_URL_device = item.slice(1).join(":");
             if (ZION_PROD_URL !== PROD_URL_device) {
               console.log('sending prod url of zion');
-              const command = `PROD_URL:${ZION_PROD_URL}`;
+              const command = `ERASE_FOLDER_DATA:UNSENT;PROD_URL:${ZION_PROD_URL}`;
               COM.sendCommands(command);
             } else {
               console.log("updated");
